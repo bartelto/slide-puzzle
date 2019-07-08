@@ -2,19 +2,19 @@ let piecesPerSide = 5;
 
 
 function initGame() {
-    for (let i = 0; i < piecesPerSide; i++) {
+    for (let r = 0; r < piecesPerSide; r++) {
         let newRow = $("<tr>").addClass("row");
-        for (let j = 0; j < piecesPerSide; j++) {
+        for (let c = 0; c < piecesPerSide; c++) {
             let newPiece = $("<td>").addClass("piece");
-            newPiece.attr("data-row", i);
-            newPiece.attr("data-col", j);
-            newPiece.css("background-position", `${-j*100}px ${-i*100}px`);
+            newPiece.attr("data-row", r);
+            newPiece.attr("data-col", c);
+            //newPiece.css("background-position", `${-c*100}px ${-r*100}px`);
             newPiece.text()
-            if (i === piecesPerSide-1 && j === piecesPerSide-1) {
+            if (r === piecesPerSide-1 && c === piecesPerSide-1) {
                 newPiece.addClass("empty");
                 newPiece.text("");
             } else {
-                newPiece.text(piecesPerSide*i + j);
+                newPiece.text(piecesPerSide*r + c);
             }   
             newRow.append(newPiece);
         }   
@@ -81,7 +81,14 @@ $("#choose-image").click( function(event) {
     puzzleImage.onload = function() {
         //alert(this.width + 'x' + this.height);
         $(".piece").not(".empty").css("background-image", `url(${puzzleImage.src})`);
-        $(".piece").not(".empty").css("background-size", "500%");
-      }
+        let imageScale =  (this.height > this.width) ? "500%" : `${500*this.width/this.height}%`;
+        $(".piece").not(".empty").css("background-size", imageScale);
+        for (let r = 0; r < piecesPerSide; r++) {
+            for (let c = 0; c < piecesPerSide; c++) {
+                $(`.piece[data-row='${r}'][data-col='${c}']`)
+                    .css("background-position", `${-c*100}px ${-r*100}px`);
+            }
+        }
+    }
 
 });
