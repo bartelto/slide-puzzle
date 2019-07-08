@@ -1,43 +1,63 @@
-let emotions = [
-    "happy",
-    "sad",
-    "angry",
-    "excited",
-    "miserable",
-    "lonely",
-    "suspicious",
-    "bored"
-];
+let piecesPerSide = 5;
 
-function addButton(buttonText) {
-    let newButton = $("<button>");
-    newButton.val(buttonText);
-    newButton.text(buttonText);
-    newButton.addClass("search");
-    
-    $("#search-buttons").append(newButton);
+
+function initGame() {
+    for (let i = 0; i < piecesPerSide; i++) {
+        let newRow = $("<tr>").addClass("row");
+        for (let j = 0; j < piecesPerSide; j++) {
+            let newPiece = $("<td>").addClass("piece");
+            newPiece.attr("data-row", i);
+            newPiece.attr("data-col", j);
+            newPiece.text()
+            if (i === piecesPerSide-1 && j === piecesPerSide-1) {
+                newPiece.addClass("empty");
+                newPiece.text("");
+            } else {
+                newPiece.text(piecesPerSide*i + j);
+            }
+            newRow.append(newPiece);
+        }   
+        $("#puzzle").append(newRow);    
+    }
+
 }
 
-for (let i=0; i < emotions.length; i++) {
-    console.log(emotions[i]);
-    addButton(emotions[i]);
+
+if ($(document).ready()) {
+    initGame();
 }
 
-$("#add").on("click", function() {
-    event.preventDefault();
-    emotions.push($("#new-button-text").val());
-    addButton($("#new-button-text").val());
-});
+$(".piece").on("click", function(event) {
+    //console.log("clicked: " + $(this).text());
+    let rowClicked = $(this).attr("data-row");
+    let colClicked = $(this).attr("data-col");
+    let rowEmpty = $(".empty").attr("data-row");
+    let colEmpty = $(".empty").attr("data-col");
 
-$(".search").on("click", function() {
-    console.log("clicked " + $(this).val());
-    queryUrl = `https://api.giphy.com/v1/gifs/search?q=${$(this).val()}&api_key=2IlH8p21NJKNOeKm9FEJ5RCQp5jNVnc8`;
+    if ((rowClicked === rowEmpty && Math.abs(colClicked - colEmpty) === 1) ||
+        (colClicked === colEmpty && Math.abs(rowClicked - rowEmpty) === 1)) {
+        
+        let move = "";
+        if (rowClicked > rowEmpty) {
+            move = {top: "-=102"};
+        } else if (rowClicked < rowEmpty){
+            move = {top: "+=102"};
+        } else if (colClicked > colEmpty){
+            move = {left: "-=102"};
+        } else if (colClicked < colEmpty){
+            move = {left: "+=102"};
+        }
 
-    $.ajax({
-        url: queryUrl,
-        method: "GET"
-    }).then( function(response) {
-        console.log(response);
-    });
+        $(this).animate( move, 300,
+            function () { 
+                $(this).removeAttr('style'); // reset the animation
+                $(".empty").text($(this).text());
+                $(".empty").removeClass("empty");
+                $(this).text("");
+                $(this).addClass("empty");  
+            }
+        );
+        
+    } 
 
 });
