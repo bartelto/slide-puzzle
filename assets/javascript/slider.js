@@ -8,13 +8,14 @@ function initGame() {
             let newPiece = $("<td>").addClass("piece");
             newPiece.attr("data-row", i);
             newPiece.attr("data-col", j);
+            newPiece.css("background-position", `${-j*100}px ${-i*100}px`);
             newPiece.text()
             if (i === piecesPerSide-1 && j === piecesPerSide-1) {
                 newPiece.addClass("empty");
                 newPiece.text("");
             } else {
                 newPiece.text(piecesPerSide*i + j);
-            }
+            }   
             newRow.append(newPiece);
         }   
         $("#puzzle").append(newRow);    

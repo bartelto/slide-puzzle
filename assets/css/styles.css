@@ -11,12 +11,14 @@
 .piece {
     height: 100px;
     width: 100px;
-    background-color: deeppink;
+    /*background-color: deeppink;*/
+    background-image: url(https://aws-tiqets-cdn.imgix.net/images/content/1e74453a4d2c45f9becb39add27f2dff.jpg?auto=format&fit=crop&ixlib=python-1.1.2&q=25&s=b720cbf5ab86e1786ee7bd2a6b4f26be&w=400&h=320&dpr=2.625);
+    /*background-position: 509px 637px;*/
     border: 1px black solid;
     display: inline-block;
     vertical-align: bottom;
     position: relative;
-}
+}       
 
 .empty {
     background: transparent;
