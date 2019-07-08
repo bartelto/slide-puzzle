@@ -51,14 +51,37 @@ $(".piece").on("click", function(event) {
 
         $(this).animate( move, 300,
             function () { 
-                $(this).removeAttr('style'); // reset the animation
+                $(this).css("top","").css("left", "");// reset the sliding animation
+                $(".empty").css("background-image", $(this).css("background-image"));
+                $(".empty").css("background-position", $(this).css("background-position"));
+                $(".empty").css("background-size", $(this).css("background-size"));
                 $(".empty").text($(this).text());
                 $(".empty").removeClass("empty");
                 $(this).text("");
-                $(this).addClass("empty");  
+                $(this).addClass("empty");
+                $(this)
+                    .css("background-image","")
+                    .css("background-position","")
+                    .css("background-size","");
+
             }
         );
         
     } 
+
+});
+
+$("#choose-image").click( function(event) {
+    event.preventDefault();
+    console.log("choosing image");
+    let puzzleImage = new Image();
+    puzzleImage.src = $("#image-url").val();
+    console.log(puzzleImage.naturalWidth, puzzleImage.naturalHeight);
+
+    puzzleImage.onload = function() {
+        //alert(this.width + 'x' + this.height);
+        $(".piece").not(".empty").css("background-image", `url(${puzzleImage.src})`);
+        $(".piece").not(".empty").css("background-size", "500%");
+      }
 
 });
