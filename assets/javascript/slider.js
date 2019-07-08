@@ -1,4 +1,6 @@
-let piecesPerSide = 5;
+let piecesPerSide = 3;
+let puzzleWidth = 500;
+let pieceSize = Math.round(puzzleWidth/piecesPerSide);
 
 
 function initGame() {
@@ -8,6 +10,8 @@ function initGame() {
             let newPiece = $("<td>").addClass("piece");
             newPiece.attr("data-row", r);
             newPiece.attr("data-col", c);
+            newPiece.css("height", `${pieceSize}px`);
+            newPiece.css("width", `${pieceSize}px`);
             //newPiece.css("background-position", `${-c*100}px ${-r*100}px`);
             newPiece.text()
             if (r === piecesPerSide-1 && c === piecesPerSide-1) {
@@ -40,13 +44,13 @@ $(".piece").on("click", function(event) {
         
         let move = "";
         if (rowClicked > rowEmpty) {
-            move = {top: "-=102"};
+            move = {top: `-=${pieceSize}`};
         } else if (rowClicked < rowEmpty){
-            move = {top: "+=102"};
+            move = {top: `+=${pieceSize}`};
         } else if (colClicked > colEmpty){
-            move = {left: "-=102"};
+            move = {left: `-=${pieceSize}`};
         } else if (colClicked < colEmpty){
-            move = {left: "+=102"};
+            move = {left: `+=${pieceSize}`};
         }
 
         $(this).animate( move, 300,
@@ -79,14 +83,26 @@ $("#choose-image").click( function(event) {
     console.log(puzzleImage.naturalWidth, puzzleImage.naturalHeight);
 
     puzzleImage.onload = function() {
-        //alert(this.width + 'x' + this.height);
+        console.log(this.width + 'x' + this.height);
         $(".piece").not(".empty").css("background-image", `url(${puzzleImage.src})`);
-        let imageScale =  (this.height > this.width) ? "500%" : `${500*this.width/this.height}%`;
+
+        let imageScale = "";
+        let offsetX = 0;
+        let offsetY = 0; 
+        if (this.height > this.width) {
+            imageScale = `${100*piecesPerSide}%`;
+            offsetY = -(100*piecesPerSide/this.width)*(this.height-this.width)/2;
+        } else {
+            imageScale = `${100*piecesPerSide*this.width/this.height}%`;
+            offsetX = -(100*piecesPerSide/this.height)*(this.width-this.height)/2;
+        }
+        console.log(offsetX, offsetY);
+
         $(".piece").not(".empty").css("background-size", imageScale);
         for (let r = 0; r < piecesPerSide; r++) {
             for (let c = 0; c < piecesPerSide; c++) {
                 $(`.piece[data-row='${r}'][data-col='${c}']`)
-                    .css("background-position", `${-c*100}px ${-r*100}px`);
+                    .css("background-position", `${offsetX-c*pieceSize}px ${offsetY-r*pieceSize}px`);
             }
         }
     }
